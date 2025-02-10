@@ -41,26 +41,47 @@
         >
           <div class="flex justify-between items-start mb-4">
             <div>
-              <h3 class="font-semibold">{{ post.user.username }}</h3>
+              <h3 class="font-semibold">{{ post.userId.username }}</h3>
               <p class="text-sm text-gray-500">
                 {{ new Date(post.createdAt).toLocaleDateString() }}
               </p>
             </div>
-            <button
-              v-if="post.user._id === authStore.user?._id"
-              @click="deletePost(post._id)"
-              class="text-red-500 hover:text-red-600"
-            >
-              Delete
-            </button>
+            <div v-if="post.userId._id === authStore.user._id" class="flex space-x-2">
+              <button @click="startEditing(post)" class="text-gray-500 hover:text-blue-500">
+                Edit
+              </button>
+              <button @click="deletePost(post._id)" class="text-red-500 hover:text-red-600">
+                Delete
+              </button>
+            </div>
           </div>
 
-          <p class="mb-4">{{ post.content }}</p>
-          <img
-            v-if="post.image"
-            :src="'http://localhost:5000/' + post.image"
-            class="rounded-lg max-h-96 w-full object-cover mb-4"
-          />
+          <div v-if="editingPost?._id === post._id">
+            <textarea
+              v-model="editingPost.content"
+              class="w-full p-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows="3"
+            ></textarea>
+            <div class="flex justify-end space-x-2">
+              <button @click="cancelEditing" class="px-4 py-2 text-gray-400 hover:text-gray-300">
+                Cancel
+              </button>
+              <button
+                @click="saveEdit"
+                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+          <template v-else>
+            <p class="mb-4">{{ post.content }}</p>
+            <img
+              v-if="post.image"
+              :src="`${apiURL}${post.image}`"
+              class="rounded-lg max-h-96 w-full object-cover mb-4"
+            />
+          </template>
 
           <div class="flex items-center space-x-4 mb-4">
             <button
@@ -84,7 +105,7 @@
               class="bg-gray-50 p-3 rounded-lg"
             >
               <div class="flex justify-between">
-                <span class="font-semibold">{{ comment.user.username }}</span>
+                <span class="font-semibold">{{ comment.userId.username }}</span>
                 <span class="text-sm text-gray-500">
                   {{ new Date(comment.createdAt).toLocaleDateString() }}
                 </span>
@@ -129,12 +150,15 @@ import { useAuthStore } from '@/stores/auth'
 import { usePostStore } from '@/stores/posts'
 import { ref, onMounted } from 'vue'
 
+const apiURL = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const postStore = usePostStore()
 
 const newPostContent = ref('')
 const selectedImage = ref<File | null>(null)
 const newComments = ref<{ [key: string]: string }>({})
+const editingPost = ref<null | { _id: string, content: string }>(null);
 
 onMounted(() => {
   postStore.fetchPosts()
@@ -154,6 +178,24 @@ const createPost = async () => {
     selectedImage.value = null
   }
 }
+
+const startEditing = (post: { _id: string, content: string }) => {
+  editingPost.value = {
+    _id: post._id,
+    content: post.content
+  };
+};
+
+const cancelEditing = () => {
+  editingPost.value = null;
+};
+
+const saveEdit = async () => {
+  if (editingPost.value && editingPost.value.content.trim()) {
+    await postStore.editPost(editingPost.value._id, editingPost.value.content);
+    editingPost.value = null;
+  }
+};
 
 const deletePost = async (postId: string) => {
   await postStore.deletePost(postId)
