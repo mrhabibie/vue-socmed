@@ -1,39 +1,50 @@
-# vue-socmed
+# VueJS SocMed
 
-This template should help get you started developing with Vue 3 in Vite.
+This guide will walk you through the setup and deployment of a VueJS SocMed app that will consume an API from [this repository](https://github.com/mrhabibie/nodejs-socmed-api).
 
-## Recommended IDE Setup
+## ⚠️ Minimum Requirements
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Ensure your environment meets these requirements:
 
-## Type Support for `.vue` Imports in TS
+| Component | Required Version | Installation Link                              |
+| --------- | ---------------- | ---------------------------------------------- |
+| NodeJS    | latest           | [Installation](https://nodejs.org/en/download) |
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 📝 Setup Environment
 
-## Customize configuration
+1. Clone VueJS SocMed project from [this repository](https://github.com/mrhabibie/vue-socmed) :
+   - HTTPS
+     ```console
+     $ git clone https://github.com/mrhabibie/vue-socmed
+     ```
+   - SSH
+     ```console
+     $ git clone git@github.com:mrhabibie/vue-socmed.git
+     ```
+2. Move to project directory :
+   ```console
+   $ cd vue-socmed
+   ```
+3. Install all the required project dependencies :
+   ```console
+   $ npm install
+   ```
+4. Copy `.env.example` to `.env` :
+   ```console
+   $ cp .env.example .env
+   ```
+5. Set the `VITE_API_URL` with your NodeJS Social Media API URL.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🚀 Running the Application
 
-## Project Setup
+1. Make sure [Setup Environment](#-setup-environment) are done.
+2. To start the application locally :
+   ```console
+   $ npm run dev
+   ```
+   The application will be available at http://localhost:5173 (the port maybe different if another service already used that port, please see at console log).
 
-```sh
-npm install
-```
+## Developer Info
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Having problem with this project?
+[Contact me](https://wa.me/6282143603556).
